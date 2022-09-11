@@ -18,6 +18,27 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
 
+    private func showOperatorAlreadyAddedAlert() {
+        let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !",
+                                        preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alertVC, animated: true, completion: nil)
+    }
+
+    private func showEnterCorrectExpressionAlert() {
+        let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !",
+                                        preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alertVC, animated: true, completion: nil)
+    }
+
+    private func showStartNewCalculationAlert() {
+        let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !",
+                                        preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alertVC, animated: true, completion: nil)
+    }
+
     private func updateTextView() {
         textView.text = calculationManager.elements.joined(separator: " ")
     }
@@ -31,55 +52,51 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        calculationManager.addOperator(.addition)
-        updateTextView()
-//        if calculationManager.canAddOperator {
-//            calculationManager.elements.append("+")
-//            updateTextView()
-//        } else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !",
-//                                            preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            self.present(alertVC, animated: true, completion: nil)
-//        }
+        if calculationManager.canAddOperator {
+            calculationManager.addOperator(.addition)
+            updateTextView()
+        } else {
+            showOperatorAlreadyAddedAlert()
+        }
     }
 
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        calculationManager.addOperator(.substraction)
-        updateTextView()
+        if calculationManager.canAddOperator {
+            calculationManager.addOperator(.substraction)
+            updateTextView()
+        } else {
+            showOperatorAlreadyAddedAlert()
+        }
+    }
 
-        // Should I keep the alerts?
+    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
+        if calculationManager.canAddOperator {
+            calculationManager.addOperator(.multiplication)
+            updateTextView()
+        } else {
+            showOperatorAlreadyAddedAlert()
+        }
+    }
 
-//        if calculationManager.canAddOperator {
-//            calculationManager.elements.append("-")
-//            updateTextView()
-//        } else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !",
-//                                            preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            self.present(alertVC, animated: true, completion: nil)
-//        }
+    @IBAction func tappedDivisonButton(_ sender: UIButton) {
+        if calculationManager.canAddOperator {
+            calculationManager.addOperator(.division)
+            updateTextView()
+        } else {
+            showOperatorAlreadyAddedAlert()
+        }
     }
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
+        guard calculationManager.expressionIsCorrect else {
+            return showEnterCorrectExpressionAlert()
+        }
+
+        guard calculationManager.expressionHaveEnoughElement else {
+            return showStartNewCalculationAlert()
+        }
+
         calculationManager.getResult()
         updateTextView()
-
-        // Should I keep the alerts?
-
-//        guard calculationManager.expressionIsCorrect else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !",
-//                                            preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-//        }
-//
-//        guard calculationManager.expressionHaveEnoughElement else {
-//            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !",
-//                                            preferredStyle: .alert)
-//            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//            return self.present(alertVC, animated: true, completion: nil)
-//        }
     }
-
 }

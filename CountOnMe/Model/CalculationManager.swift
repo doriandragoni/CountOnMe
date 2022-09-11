@@ -11,7 +11,9 @@ import Foundation
 class CalculationManager {
     let operations: [OperationType: String] = [
         .addition: "+",
-        .substraction: "-"
+        .substraction: "-",
+        .multiplication: "x",
+        .division: "/"
     ]
 
     var elements = [String]()
@@ -25,7 +27,8 @@ class CalculationManager {
     }
 
     var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
+        return elements.last != operations[.addition] && elements.last != operations[.substraction]
+        && elements.last != operations[.multiplication] && elements.last != operations[.division]
     }
 
     var expressionHaveResult: Bool {
@@ -39,7 +42,7 @@ class CalculationManager {
         // Check if the last element is a number..
         if elements.last?.last?.isNumber == true {
             // ...if yes, I append the new number to the last number...
-            elements[elements.endIndex-1].append(numberText)
+            elements[elements.endIndex - 1].append(numberText)
         } else {
             // ...if not, I only append a new number
             elements.append(numberText)
@@ -51,7 +54,7 @@ class CalculationManager {
             if elements.last?.last?.isNumber == true {
                 elements.append(operation)
             } else if operation != elements.last {
-                elements[elements.endIndex-1] = operation
+                elements[elements.endIndex - 1] = operation
             }
         }
     }
@@ -69,10 +72,14 @@ class CalculationManager {
 
                 var result: Int
                 switch operand {
-                case "+":
+                case operations[.addition]:
                     result = left + right
-                case "-":
+                case operations[.substraction]:
                     result = left - right
+                case operations[.multiplication]:
+                    result = left * right
+                case operations[.division]:
+                    result = left / right
                 default:
                     fatalError("Unknown operator !")
                 }
@@ -88,5 +95,5 @@ class CalculationManager {
 }
 
 enum OperationType {
-    case addition, substraction
+    case addition, substraction, multiplication, division
 }
