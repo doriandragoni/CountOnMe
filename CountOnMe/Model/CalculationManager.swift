@@ -8,8 +8,13 @@
 
 import Foundation
 
+enum OperationType {
+    case addition, substraction, multiplication, division
+}
+
 class CalculationManager {
-    let operations: [OperationType: String] = [
+    // MARK: - Properties
+    private let operations: [OperationType: String] = [
         .addition: "+",
         .substraction: "-",
         .multiplication: "x",
@@ -20,6 +25,7 @@ class CalculationManager {
 
     var expressionIsCorrect: Bool {
         return elements.last != operations[.addition] && elements.last != operations[.substraction]
+        && elements.last != operations[.multiplication] && elements.last != operations[.division]
     }
 
     var expressionHaveEnoughElement: Bool {
@@ -35,32 +41,29 @@ class CalculationManager {
         return elements.firstIndex(of: "=") != nil
     }
 
+    // MARK: - Functions
     func addNumber(_ numberText: String) {
         if expressionHaveResult {
             elements = []
         }
         // Check if the last element is a number..
         if elements.last?.last?.isNumber == true {
-            // ...if yes, I append the new number to the last number...
+            // ...if yes, append the new number to the last number...
             elements[elements.endIndex - 1].append(numberText)
         } else {
-            // ...if not, I only append a new number
+            // ...if not, only append a new number
             elements.append(numberText)
         }
     }
 
     func addOperator(_ operationType: OperationType) {
         if let operation = operations[operationType] {
-            if elements.last?.last?.isNumber == true {
-                elements.append(operation)
-            } else if operation != elements.last {
-                elements[elements.endIndex - 1] = operation
-            }
+            elements.append(operation)
         }
     }
 
     func getResult() {
-        if expressionIsCorrect && expressionHaveEnoughElement {
+        if !expressionHaveResult {
             // Create local copy of operations
             var operationsToReduce = elements
 
@@ -70,7 +73,7 @@ class CalculationManager {
                 let operand = operationsToReduce[1]
                 let right = Int(operationsToReduce[2])!
 
-                var result: Int
+                var result: Int?
                 switch operand {
                 case operations[.addition]:
                     result = left + right
@@ -81,19 +84,17 @@ class CalculationManager {
                 case operations[.division]:
                     result = left / right
                 default:
-                    fatalError("Unknown operator !")
+                    result = nil
                 }
 
                 operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
+                if let result = result {
+                    operationsToReduce.insert("\(result)", at: 0)
+                }
             }
 
             elements.append("=")
-            elements.append(operationsToReduce.first!)
+            elements.append(operationsToReduce.first ?? "Error")
         }
     }
-}
-
-enum OperationType {
-    case addition, substraction, multiplication, division
 }

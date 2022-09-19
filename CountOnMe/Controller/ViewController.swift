@@ -9,15 +9,19 @@
 import UIKit
 
 class ViewController: UIViewController {
+    // MARK: - Outlets
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
 
+    // MARK: - Properties
     let calculationManager = CalculationManager()
 
+    // MARK: - Override
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
+    // MARK: - Functions
     private func showOperatorAlreadyAddedAlert() {
         let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !",
                                         preferredStyle: .alert)
@@ -43,7 +47,7 @@ class ViewController: UIViewController {
         textView.text = calculationManager.elements.joined(separator: " ")
     }
 
-    // View actions
+    // MARK: - Action
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         if let numberText = sender.title(for: .normal) {
             calculationManager.addNumber(numberText)
