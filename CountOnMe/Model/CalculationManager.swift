@@ -8,24 +8,15 @@
 
 import Foundation
 
-enum OperationType {
-    case addition, substraction, multiplication, division
-}
-
 class CalculationManager {
     // MARK: - Properties
-    private let operations: [OperationType: String] = [
-        .addition: "+",
-        .substraction: "-",
-        .multiplication: "x",
-        .division: "/"
-    ]
-
     var elements = [String]()
 
     var expressionIsCorrect: Bool {
-        return elements.last != operations[.addition] && elements.last != operations[.substraction]
-        && elements.last != operations[.multiplication] && elements.last != operations[.division]
+        guard let element = elements.last else {
+            return false
+        }
+        return !OperationType.isOperationType(element)
     }
 
     var expressionHaveEnoughElement: Bool {
@@ -33,8 +24,10 @@ class CalculationManager {
     }
 
     var canAddOperator: Bool {
-        return elements.last != operations[.addition] && elements.last != operations[.substraction]
-        && elements.last != operations[.multiplication] && elements.last != operations[.division]
+        guard let element = elements.last else {
+            return false
+        }
+        return !OperationType.isOperationType(element)
     }
 
     var expressionHaveResult: Bool {
@@ -57,9 +50,7 @@ class CalculationManager {
     }
 
     func addOperator(_ operationType: OperationType) {
-        if let operation = operations[operationType] {
-            elements.append(operation)
-        }
+        elements.append(operationType.rawValue)
     }
 
     func getResult() {
