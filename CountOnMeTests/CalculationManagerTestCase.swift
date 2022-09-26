@@ -61,7 +61,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveEnoughElement)
     }
 
-    func testGivenExpression3Plus4_WhenGettinResult_ThenResultIs7() {
+    func testGivenExpression3Plus4_WhenGettingResult_ThenResultIs7() {
         calculationManager.addNumber("3")
         calculationManager.addOperator(.addition)
         calculationManager.addNumber("4")
@@ -72,7 +72,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
-    func testGivenExpression4Minus3_WhenGettinResult_ThenResultIs1() {
+    func testGivenExpression4Minus3_WhenGettingResult_ThenResultIs1() {
         calculationManager.addNumber("4")
         calculationManager.addOperator(.substraction)
         calculationManager.addNumber("3")
@@ -83,7 +83,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
-    func testGivenExpression3Multiply4_WhenGettinResult_ThenResultIs12() {
+    func testGivenExpression3Multiply4_WhenGettingResult_ThenResultIs12() {
         calculationManager.addNumber("3")
         calculationManager.addOperator(.multiplication)
         calculationManager.addNumber("4")
@@ -94,7 +94,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
-    func testGivenExpression6Divide3_WhenGettinResult_ThenResultIs2() {
+    func testGivenExpression6Divide3_WhenGettingResult_ThenResultIs2() {
         calculationManager.addNumber("6")
         calculationManager.addOperator(.division)
         calculationManager.addNumber("3")
@@ -105,7 +105,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
-    func testGivenExpressionWithUnknownOperator_WhenGettinResult_ThenResultIsError() {
+    func testGivenExpressionWithUnknownOperator_WhenGettingResult_ThenResultIsError() {
         calculationManager.elements = ["3", "&", "4"]
 
         calculationManager.getResult()
@@ -113,15 +113,17 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertEqual(calculationManager.elements.last, "Error")
     }
 
-//    func testGivenExpressionWithAdditionAndMultiplication_WhenGettinResult_ThenResultShouldTakeCareOfPriority() {
-//        calculationManager.addNumber("3")
-//        calculationManager.addOperator(.addition)
-//        calculationManager.addNumber("4")
-//        calculationManager.addOperator(.multiplication)
-//        calculationManager.addNumber("2")
-//
-//        calculationManager.getResult()
-//
-//        XCTAssertEqual(calculationManager.elements.last, "11")
-//    }
+    func testGivenExpressionWithAdditionAndMultiplication_WhenGettinResult_ThenResultShouldTakeCareOfPriority() {
+        calculationManager.addNumber("3")
+        calculationManager.addOperator(.addition)
+        calculationManager.addNumber("4")
+        calculationManager.addOperator(.multiplication)
+        calculationManager.addNumber("2")
+        calculationManager.addOperator(.substraction)
+        calculationManager.addNumber("5")
+
+        calculationManager.getResult()
+
+        XCTAssertEqual(calculationManager.elements.last, "6")
+    }
 }

@@ -69,32 +69,45 @@ class CalculationManager {
 
             // Iterate over operations while an operand still here
             while operationsToReduce.count > 1 {
-                let left = Int(operationsToReduce[0])!
-                let operand = operationsToReduce[1]
-                let right = Int(operationsToReduce[2])!
+                var indexOfOperand = 1
+
+                if let index = operationsToReduce.firstIndex(where: { $0 == OperationType.multiplication.rawValue
+                    || $0 == OperationType.division.rawValue }) {
+                    indexOfOperand = index
+                }
+
+                let left = Int(operationsToReduce[indexOfOperand - 1])!
+                let operand = operationsToReduce[indexOfOperand]
+                let right = Int(operationsToReduce[indexOfOperand + 1])!
 
                 var result: Int?
                 switch operand {
-                case operations[.addition]:
+                case OperationType.addition.rawValue:
                     result = left + right
-                case operations[.substraction]:
+                case OperationType.substraction.rawValue:
                     result = left - right
-                case operations[.multiplication]:
+                case OperationType.multiplication.rawValue:
                     result = left * right
-                case operations[.division]:
+                case OperationType.division.rawValue:
                     result = left / right
                 default:
                     result = nil
                 }
 
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
                 if let result = result {
-                    operationsToReduce.insert("\(result)", at: 0)
+                    operationsToReduce.replaceSubrange((indexOfOperand - 1)...(indexOfOperand + 1),
+                                                       with: ["\(String(describing: result))"])
+                } else {
+                    break
                 }
             }
 
             elements.append("=")
-            elements.append(operationsToReduce.first ?? "Error")
+            if !(operationsToReduce.count > 1), let first = operationsToReduce.first {
+                elements.append(first)
+            } else {
+                elements.append("Error")
+            }
         }
     }
 }
