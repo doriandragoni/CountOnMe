@@ -91,6 +91,11 @@ class ViewController: UIViewController {
         }
     }
 
+    @IBAction func tappedClearButton(_ sender: UIButton) {
+        calculationManager.clear()
+        updateTextView()
+    }
+
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard calculationManager.expressionIsCorrect else {
             return showEnterCorrectExpressionAlert()

@@ -113,7 +113,7 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertEqual(calculationManager.elements.last, "Error")
     }
 
-    func testGivenExpressionWithAdditionAndMultiplication_WhenGettinResult_ThenResultShouldTakeCareOfPriority() {
+    func testGivenExpressionWithAdditionAndMultiplication_WhenGettingResult_ThenResultShouldTakeCareOfPriority() {
         calculationManager.addNumber("3")
         calculationManager.addOperator(.addition)
         calculationManager.addNumber("4")
@@ -125,5 +125,23 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.getResult()
 
         XCTAssertEqual(calculationManager.elements.last, "6")
+    }
+
+    func testGivenCalculation_WhenClearing_ThenCalculationShouldBeCleared() {
+        calculationManager.addNumber("3")
+        calculationManager.addOperator(.addition)
+        calculationManager.addNumber("4")
+        calculationManager.getResult()
+
+        calculationManager.clear()
+
+        XCTAssertNil(calculationManager.elements.first)
+    }
+
+    func testGivenCalculationCleared_WhenGoingToAddOperator_ThenCannotAddOperatorAndExpressionNotCorrect() {
+        calculationManager.elements = []
+
+        XCTAssertFalse(calculationManager.canAddOperator)
+        XCTAssertFalse(calculationManager.expressionIsCorrect)
     }
 }

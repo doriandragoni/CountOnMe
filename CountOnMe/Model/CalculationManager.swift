@@ -53,6 +53,10 @@ class CalculationManager {
         elements.append(operationType.rawValue)
     }
 
+    func clear() {
+        elements = []
+    }
+
     func getResult() {
         if !expressionHaveResult {
             // Create local copy of operations
