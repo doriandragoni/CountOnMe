@@ -75,11 +75,11 @@ class CalculationManager {
                     indexOfOperand = index
                 }
 
-                let left = Int(operationsToReduce[indexOfOperand - 1])!
+                let left = Float(operationsToReduce[indexOfOperand - 1])!
                 let operand = operationsToReduce[indexOfOperand]
-                let right = Int(operationsToReduce[indexOfOperand + 1])!
+                let right = Float(operationsToReduce[indexOfOperand + 1])!
 
-                var result: Int?
+                var result: Float?
                 switch operand {
                 case OperationType.addition.rawValue:
                     result = left + right
@@ -95,7 +95,7 @@ class CalculationManager {
 
                 if let result = result {
                     operationsToReduce.replaceSubrange((indexOfOperand - 1)...(indexOfOperand + 1),
-                                                       with: ["\(String(describing: result))"])
+                                                       with: ["\(result.clean)"])
                 } else {
                     break
                 }
@@ -108,5 +108,12 @@ class CalculationManager {
                 elements.append("Error")
             }
         }
+    }
+}
+
+// Use this to display the decimals only if there are any
+extension Float {
+    var clean: String {
+       return self.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
     }
 }

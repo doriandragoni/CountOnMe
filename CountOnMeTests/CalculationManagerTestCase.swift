@@ -89,12 +89,12 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
-    func testGivenExpression3Divide2_WhenGettingResult_ThenResultIs1() {
+    func testGivenExpression3Divide2_WhenGettingResult_ThenResultIs1Point5() {
         writeCalculation(.division)
 
         calculationManager.getResult()
 
-        XCTAssertEqual(calculationManager.elements.last, "1")
+        XCTAssertEqual(calculationManager.elements.last, "1.5")
         XCTAssertTrue(calculationManager.expressionHaveResult)
     }
 
