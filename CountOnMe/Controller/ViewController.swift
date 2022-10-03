@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     }
 
     private func updateTextView() {
-        textView.text = calculationManager.elements.joined(separator: " ")
+        textView.text = calculationManager.textFieldValue()
     }
 
     // MARK: - Action

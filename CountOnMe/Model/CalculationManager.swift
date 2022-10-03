@@ -35,6 +35,10 @@ class CalculationManager {
     }
 
     // MARK: - Functions
+    func textFieldValue() -> String {
+        return elements.joined(separator: " ")
+    }
+
     func addNumber(_ numberText: String) {
         if expressionHaveResult {
             elements = []
