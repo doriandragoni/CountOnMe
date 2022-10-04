@@ -15,79 +15,67 @@ class ViewController: UIViewController {
 
     // MARK: - Properties
     let calculationManager = CalculationManager()
+    let alertVC = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
 
-    // MARK: - Override
+    // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
+        initAlert()
     }
 
     // MARK: - Functions
-    private func showOperatorAlreadyAddedAlert() {
-        let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !",
-                                        preferredStyle: .alert)
+    private func initAlert() {
+        alertVC.title = "Zéro!"
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alertVC, animated: true, completion: nil)
+    }
+
+    private func showOperatorAlreadyAddedAlert() {
+        alertVC.message = "Un operateur est déja mis !"
+        showAlert()
     }
 
     private func showEnterCorrectExpressionAlert() {
-        let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !",
-                                        preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alertVC, animated: true, completion: nil)
+        alertVC.message = "Entrez une expression correcte !"
+        showAlert()
     }
 
     private func showStartNewCalculationAlert() {
-        let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !",
-                                        preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        alertVC.message = "Démarrez un nouveau calcul !"
+        showAlert()
+    }
+
+    private func showAlert() {
         self.present(alertVC, animated: true, completion: nil)
     }
 
     private func updateTextView() {
-        textView.text = calculationManager.textFieldValue()
+        textView.text = calculationManager.getTextViewValue()
     }
 
-    // MARK: - Action
+    // MARK: - Actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
+        // Check if the clicked button has a value in his title
         if let numberText = sender.title(for: .normal) {
             calculationManager.addNumber(numberText)
             updateTextView()
         }
     }
 
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        if calculationManager.canAddOperator {
-            calculationManager.addOperator(.addition)
-            updateTextView()
-        } else {
-            showOperatorAlreadyAddedAlert()
-        }
-    }
+    @IBAction func tappedOperatorButton(_ sender: UIButton) {
+        // Check if the clicked button has a value in his title
+        // and if this value is an operator
+        if let operatorText = sender.title(for: .normal),
+           let operatorTextValue = OperationType(rawValue: operatorText) {
+            guard calculationManager.lastIsNotOperator else {
+                return showEnterCorrectExpressionAlert()
+            }
 
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if calculationManager.canAddOperator {
-            calculationManager.addOperator(.substraction)
-            updateTextView()
-        } else {
-            showOperatorAlreadyAddedAlert()
-        }
-    }
+            guard !calculationManager.expressionHasResult else {
+                return showStartNewCalculationAlert()
+            }
 
-    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
-        if calculationManager.canAddOperator {
-            calculationManager.addOperator(.multiplication)
+            calculationManager.addOperator(operatorTextValue)
             updateTextView()
-        } else {
-            showOperatorAlreadyAddedAlert()
-        }
-    }
-
-    @IBAction func tappedDivisonButton(_ sender: UIButton) {
-        if calculationManager.canAddOperator {
-            calculationManager.addOperator(.division)
-            updateTextView()
-        } else {
-            showOperatorAlreadyAddedAlert()
         }
     }
 
@@ -97,11 +85,11 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard calculationManager.expressionIsCorrect else {
+        guard calculationManager.lastIsNotOperator else {
             return showEnterCorrectExpressionAlert()
         }
 
-        guard calculationManager.expressionHaveEnoughElement else {
+        guard calculationManager.expressionHasEnoughElements && !calculationManager.expressionHasResult else {
             return showStartNewCalculationAlert()
         }
 

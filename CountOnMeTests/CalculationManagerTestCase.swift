@@ -17,9 +17,9 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager = CalculationManager()
     }
 
-    private func writeCalculation(_ operand: OperationType) {
+    private func writeCalculation(_ operatorValue: OperationType) {
         calculationManager.addNumber("3")
-        calculationManager.addOperator(operand)
+        calculationManager.addOperator(operatorValue)
         calculationManager.addNumber("2")
     }
 
@@ -27,7 +27,7 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.addNumber("3")
 
         XCTAssertEqual(calculationManager.elements.last, "3")
-        XCTAssertTrue(calculationManager.canAddOperator)
+        XCTAssertTrue(calculationManager.lastIsNotOperator)
     }
 
     func testGivenNumberAdded_WhenAddingNumber_ThenNumberAppendedToTheLastNumber() {
@@ -52,14 +52,14 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.addOperator(.addition)
 
         XCTAssertEqual(calculationManager.elements.last, "+")
-        XCTAssertFalse(calculationManager.canAddOperator)
+        XCTAssertFalse(calculationManager.lastIsNotOperator)
     }
 
     func testGivenNumberAndOperatorAdded_WhenAddingNumber_ThenExpressionIsCorrectAndHaveEnoughElements() {
         writeCalculation(.addition)
 
-        XCTAssertTrue(calculationManager.expressionIsCorrect)
-        XCTAssertTrue(calculationManager.expressionHaveEnoughElement)
+        XCTAssertTrue(calculationManager.lastIsNotOperator)
+        XCTAssertTrue(calculationManager.expressionHasEnoughElements)
     }
 
     func testGivenExpression3Plus2_WhenGettingResult_ThenResultIs5() {
@@ -68,7 +68,7 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.getResult()
 
         XCTAssertEqual(calculationManager.elements.last, "5")
-        XCTAssertTrue(calculationManager.expressionHaveResult)
+        XCTAssertTrue(calculationManager.expressionHasResult)
     }
 
     func testGivenExpression3Minus2_WhenGettingResult_ThenResultIs1() {
@@ -77,7 +77,7 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.getResult()
 
         XCTAssertEqual(calculationManager.elements.last, "1")
-        XCTAssertTrue(calculationManager.expressionHaveResult)
+        XCTAssertTrue(calculationManager.expressionHasResult)
     }
 
     func testGivenExpression3Multiply2_WhenGettingResult_ThenResultIs6() {
@@ -86,7 +86,7 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.getResult()
 
         XCTAssertEqual(calculationManager.elements.last, "6")
-        XCTAssertTrue(calculationManager.expressionHaveResult)
+        XCTAssertTrue(calculationManager.expressionHasResult)
     }
 
     func testGivenExpression3Divide2_WhenGettingResult_ThenResultIs1Point5() {
@@ -95,7 +95,7 @@ class CalculationManagerTestCase: XCTestCase {
         calculationManager.getResult()
 
         XCTAssertEqual(calculationManager.elements.last, "1.5")
-        XCTAssertTrue(calculationManager.expressionHaveResult)
+        XCTAssertTrue(calculationManager.expressionHasResult)
     }
 
     func testGivenExpressionWithUnknownOperator_WhenGettingResult_ThenResultIsError() {
@@ -129,17 +129,16 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertNil(calculationManager.elements.first)
     }
 
-    func testGivenCalculationCleared_WhenGoingToAddOperator_ThenCannotAddOperatorAndExpressionNotCorrect() {
+    func testGivenCalculationCleared_WhenGoingToAddOperator_ThenCannotAddOperator() {
         calculationManager.elements = []
 
-        XCTAssertFalse(calculationManager.canAddOperator)
-        XCTAssertFalse(calculationManager.expressionIsCorrect)
+        XCTAssertFalse(calculationManager.lastIsNotOperator)
     }
 
     func testGivenCalculationWritten_WhenUpdatingTheTextView_ThenTextViewIsProperlyDisplayed() {
         writeCalculation(.addition)
 
-        let textView = calculationManager.textFieldValue()
+        let textView = calculationManager.getTextViewValue()
 
         XCTAssertEqual(textView, "3 + 2")
     }

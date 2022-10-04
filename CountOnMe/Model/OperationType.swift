@@ -8,6 +8,7 @@
 
 import Foundation
 
+// Use an enum to make sure the entered operator is one of the operators listed below
 enum OperationType: String {
     case addition = "+", substraction = "-", multiplication = "x", division = "/"
 
