@@ -67,7 +67,7 @@ class ViewController: UIViewController {
         if let operatorText = sender.title(for: .normal),
            let operatorTextValue = OperationType(rawValue: operatorText) {
             guard calculationManager.lastIsNotOperator else {
-                return showEnterCorrectExpressionAlert()
+                return showOperatorAlreadyAddedAlert()
             }
 
             guard !calculationManager.expressionHasResult else {
