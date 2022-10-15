@@ -106,18 +106,34 @@ class CalculationManagerTestCase: XCTestCase {
         XCTAssertEqual(calculationManager.elements.last, "Error")
     }
 
-    func testGivenExpressionWithAdditionAndMultiplication_WhenGettingResult_ThenResultShouldTakeCareOfPriority() {
+    func testGivenExpressionDivisionBy0_WhenGettingResult_ThenResultIsError() {
         calculationManager.addNumber("3")
-        calculationManager.addOperator(.addition)
-        calculationManager.addNumber("2")
-        calculationManager.addOperator(.multiplication)
-        calculationManager.addNumber("4")
-        calculationManager.addOperator(.substraction)
-        calculationManager.addNumber("5")
+        calculationManager.addOperator(.division)
+        calculationManager.addNumber("0")
 
         calculationManager.getResult()
 
-        XCTAssertEqual(calculationManager.elements.last, "6")
+        XCTAssertEqual(calculationManager.elements.last, "Error")
+    }
+
+    func testGivenComplexeExpression_WhenGettingResult_ThenResultShouldTakeCareOfPriority() {
+        calculationManager.addNumber("3")
+        calculationManager.addOperator(.addition)
+        calculationManager.addNumber("14")
+        calculationManager.addOperator(.multiplication)
+        calculationManager.addNumber("6")
+        calculationManager.addOperator(.substraction)
+        calculationManager.addNumber("30")
+        calculationManager.addOperator(.division)
+        calculationManager.addNumber("5")
+        calculationManager.addOperator(.addition)
+        calculationManager.addNumber("12")
+        calculationManager.addOperator(.substraction)
+        calculationManager.addNumber("48")
+
+        calculationManager.getResult()
+
+        XCTAssertEqual(calculationManager.elements.last, "45")
     }
 
     func testGivenCalculation_WhenClearing_ThenCalculationShouldBeCleared() {

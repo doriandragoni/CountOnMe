@@ -57,63 +57,78 @@ class CalculationManager {
 
     func getResult() {
         if !expressionHasResult {
-            // Create local copy of operations
-            var operationsToReduce = elements
+            // Start the calculation
+            calculate()
+        }
+    }
 
-            // Iterate over operations while an operator still here
-            while operationsToReduce.count > 1 {
-                // Set the index of the operator to 1 by default
-                var indexOfOperator = 1
+    private func calculate() {
+        // Create local copy of operations
+        var operationsToReduce = elements
 
-                // If there is a multiplication or division operator, re-set the index of the operator
-                if let index = operationsToReduce.firstIndex(where: { $0 == OperationType.multiplication.rawValue
-                    || $0 == OperationType.division.rawValue }) {
-                    indexOfOperator = index
-                }
+        // Iterate over operations while an operator still here
+        while operationsToReduce.count > 1 {
+            // Set the index of the operator to 1 by default
+            var indexOfOperator = 1
 
-                let left = Float(operationsToReduce[indexOfOperator - 1])!
-                let operatorValue = operationsToReduce[indexOfOperator]
-                let right = Float(operationsToReduce[indexOfOperator + 1])!
+            // If there is a multiplication or division operator, re-set the index of the operator
+            if let index = operationsToReduce.firstIndex(where: { $0 == OperationType.multiplication.rawValue
+                || $0 == OperationType.division.rawValue }) {
+                indexOfOperator = index
 
-                var result: Float?
-                switch operatorValue {
-                case OperationType.addition.rawValue:
-                    result = left + right
-                case OperationType.substraction.rawValue:
-                    result = left - right
-                case OperationType.multiplication.rawValue:
-                    result = left * right
-                case OperationType.division.rawValue:
-                    result = left / right
-                default:
-                    result = nil
-                }
-
-                if let result = result, !result.isNaN {
-                    // Replace the three elements used for the calculation with the result
-                    operationsToReduce.replaceSubrange((indexOfOperator - 1)...(indexOfOperator + 1),
-                                                       with: ["\(result.clean)"])
-                } else {
-                    // If no result, exit the while loop
+                // If there is a division by 0, exit the while loop
+                if operationsToReduce[index] == OperationType.division.rawValue
+                    && operationsToReduce[index + 1] == "0" {
                     break
                 }
             }
 
-            elements.append("=")
-            // If there a final result, show it...
-            if !(operationsToReduce.count > 1), let finalResult = operationsToReduce.first {
-                elements.append(finalResult)
-            } else {
-                // ...else, display "Error"
-                elements.append("Error")
+            let left = Float(operationsToReduce[indexOfOperator - 1])!
+            let operatorValue = operationsToReduce[indexOfOperator]
+            let right = Float(operationsToReduce[indexOfOperator + 1])!
+
+            var result: Float?
+            switch operatorValue {
+            case OperationType.addition.rawValue:
+                result = left + right
+            case OperationType.substraction.rawValue:
+                result = left - right
+            case OperationType.multiplication.rawValue:
+                result = left * right
+            case OperationType.division.rawValue:
+                result = left / right
+            default:
+                result = nil
             }
+
+            if let result = result, !result.isNaN {
+                // Replace the three elements used for the calculation with the result
+                operationsToReduce.replaceSubrange((indexOfOperator - 1)...(indexOfOperator + 1),
+                                                   with: ["\(result.clean)"])
+            } else {
+                // If no result, exit the while loop
+                break
+            }
+        }
+
+        showResult(operationsToReduce: operationsToReduce)
+    }
+
+    private func showResult(operationsToReduce: [String]) {
+        elements.append("=")
+        // If there a final result, show it...
+        if !(operationsToReduce.count > 1), let finalResult = operationsToReduce.first {
+            elements.append(finalResult)
+        } else {
+            // ...else, display "Error"
+            elements.append("Error")
         }
     }
 }
 
 // Use this to display the decimals only if there are any
 extension Float {
-    var clean: String {
+    fileprivate var clean: String {
        return self.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
     }
 }
