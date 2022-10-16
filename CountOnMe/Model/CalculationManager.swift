@@ -56,13 +56,6 @@ class CalculationManager {
     }
 
     func getResult() {
-        if !expressionHasResult {
-            // Start the calculation
-            calculate()
-        }
-    }
-
-    private func calculate() {
         // Create local copy of operations
         var operationsToReduce = elements
 
@@ -111,10 +104,6 @@ class CalculationManager {
             }
         }
 
-        showResult(operationsToReduce: operationsToReduce)
-    }
-
-    private func showResult(operationsToReduce: [String]) {
         elements.append("=")
         // If there a final result, show it...
         if !(operationsToReduce.count > 1), let finalResult = operationsToReduce.first {
